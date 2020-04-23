@@ -308,9 +308,57 @@ socket.on('connect', function() {
 
 socket.on('message', function(obj) {
     let status = document.getElementById("status");
-    guitar.pull(30);
-    bass.pull(30);
-    keyboard.trigger(2);
     status.innerHTML = obj[0];
-    console.log(obj);
+
+    let o = JSON.parse(obj[1])
+    let attributes = o.attributes
+    let player = o.type;
+
+    if (player == 'pluck')
+    {
+        attributes.forEach((a) => {
+            if (a.hasOwnProperty('amp'))
+            {
+                let amp = a.amp;
+                if (Array.isArray(amp)) {
+                    amp.forEach((p) => {
+                        guitar.pull(p * 80);
+                    });
+                }
+                else
+                    guitar.pull(amp * 80);
+            }
+        });
+    }
+
+    if (player == 'bass')
+    {
+        attributes.forEach((a) => {
+            if (a.hasOwnProperty('amp'))
+            {
+                let amp = a.amp;
+                if (Array.isArray(amp)) {
+                    amp.forEach((p) => {
+                        bass.pull(p * 80);
+                    });
+                }
+                else
+                    bass.pull(amp * 80);
+            }
+        });
+    }
+
+    attributes.forEach((a) => {
+        if (a.hasOwnProperty('degree'))
+        {
+            let pitches = a.degree;
+            if (Array.isArray(pitches)) {
+                pitches.forEach((p) => {
+                    keyboard.trigger(p);
+                });
+            }
+            else
+                keyboard.trigger(pitches)
+        }
+    });
 });
