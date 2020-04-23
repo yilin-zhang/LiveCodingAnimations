@@ -171,11 +171,39 @@ function draw() {
     bass.update();
     bass.draw(150, 250);
 
-    counter++;
-    if (counter == 100){
-        counter = 0;
-        guitar.pull(30);
-        bass.pull(30);
-    }
+    //counter++;
+    //if (counter == 100){
+    //    counter = 0;
+    //    guitar.pull(30);
+    //    bass.pull(30);
+    //}
 }
 
+//////////////////////////////////////////////////
+// osc set up
+
+var socket = io('http://127.0.0.1:8081');
+socket.on('connect', function() {
+    // sends to socket.io server the host/port of oscServer
+    // and oscClient
+    socket.emit('config',
+                {
+                    server: {
+                        port: 3333,
+                        host: '127.0.0.1'
+                    },
+                    client: {
+                        port: 3334,
+                        host: '127.0.0.1'
+                    }
+                }
+               );
+});
+
+socket.on('message', function(obj) {
+    var status = document.getElementById("status");
+    guitar.pull(30);
+    bass.pull(30);
+    status.innerHTML = obj[0];
+    console.log(obj);
+});

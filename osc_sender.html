@@ -7,5 +7,6 @@
   document.getElementById('send').addEventListener('click', () => {
     var message = new OSC.Message('/test/random', Math.random());
     osc.send(message);
+    console.log(message);
   });
 </script>
