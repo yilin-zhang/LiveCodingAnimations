@@ -286,7 +286,9 @@ function draw() {
 }
 
 
-var socket = io('http://127.0.0.1:8081');
+//////////////////////////////////////////////////
+// OSC set up
+let socket = io('http://127.0.0.1:8081');
 socket.on('connect', function() {
     // sends to socket.io server the host/port of oscServer
     // and oscClient
@@ -305,7 +307,7 @@ socket.on('connect', function() {
 });
 
 socket.on('message', function(obj) {
-    var status = document.getElementById("status");
+    let status = document.getElementById("status");
     guitar.pull(30);
     bass.pull(30);
     keyboard.trigger(2);
