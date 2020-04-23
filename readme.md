@@ -28,7 +28,7 @@ $ node install
 $ node bridge.js
 ```
 
-(Optional, if you have alternative like `SimpleHTTPServer` for Python.)
+(Optional, you can use other server if you have alternative like `SimpleHTTPServer` for Python.)
 ```sh
 $ npm install http-server -g
 ```
