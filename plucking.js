@@ -25,52 +25,130 @@ class Spring {
     pull(distance) {
         this.pos += distance;
     }
-
-    draw() {
-        fill(0.2);
-        circle(50, this.pos, 10);
-    }
 }
 
 class PString {
-    constructor(length, M, K, D) {
+    constructor(length, color, thickness, M, K, D) {
         this.length = length;
-        this.array = Array(this.length);
-        for (let i=0; i < this.length; i++) {
+        this.color = color;
+        this.thickness = thickness;
+        this.array = Array(this.length/2);
+        for (let i=0; i < this.array.length; i++) {
             this.array[i] = new Spring(M, K, D);
         }
     }
 
     pull(distance) {
-        let middle_pos = this.length / 2;
-        for (let i=0; i < this.length; i++) {
+        let middle_pos = this.array.length / 2;
+        for (let i=0; i < this.array.length; i++) {
             this.array[i].pull(Math.sin(Math.PI/2*(1 + (i - middle_pos)/middle_pos))*distance);
         }
     }
 
     draw(x, y) {
-        for (let i=0; i < this.length; i++) {
-            stroke('purple'); // Change the color
-            strokeWeight(3);
-            point(x+i*1, y+this.array[i].pos);
+        for (let i=0; i < this.array.length; i++) {
+            stroke(this.color); // Change the color
+            strokeWeight(this.thickness);
+            point(x+i*2, y+this.array[i].pos);
         }
     }
 
     update() {
-        for (let i=0; i < this.length; i++) {
+        for (let i=0; i < this.array.length; i++) {
             this.array[i].update();
         }
     }
 }
 
+//////////////////////////////////////////////////
+// Instrument Definitions
+class Guitar {
+    constructor(length, height, color) {
+        this.strings = new Array(5);
+        this.length = length;
+        this.height = height;
+        this.strings[0] = new PString(this.length, color, 4.5, 0.4, 0.5, 0.85);
+        this.strings[1] = new PString(this.length, color, 4, 0.35, 0.4, 0.83);
+        this.strings[2] = new PString(this.length, color, 3.5, 0.2, 0.3, 0.8);
+        this.strings[3] = new PString(this.length, color, 3, 0.15, 0.2, 0.77);
+        this.strings[4] = new PString(this.length, color, 2.5, 0.1, 0.15, 0.75);
+        this.strings[5] = new PString(this.length, color, 2, 0.05, 0.1, 0.73);
+    }
+
+    pull(distance) {
+        for (let i=0; i < this.strings.length; i++) {
+            this.strings[i].pull(distance);
+        }
+    }
+
+    draw(x, y) {
+        let interval_distance = this.height / (5-1);
+        for (let i=0; i < this.strings.length; i++) {
+            this.strings[i].draw(x, y+interval_distance*i);
+        }
+    }
+
+    update() {
+        for (let i=0; i < this.strings.length; i++) {
+            this.strings[i].update();
+        }
+    }
+}
+
+class Bass {
+    constructor(length, height, color) {
+        this.strings = new Array(4);
+        this.length = length;
+        this.height = height;
+        this.strings[0] = new PString(this.length, color, 5.5, 0.4, 0.5, 0.85);
+        this.strings[1] = new PString(this.length, color, 5, 0.35, 0.4, 0.83);
+        this.strings[2] = new PString(this.length, color, 4.5, 0.2, 0.3, 0.8);
+        this.strings[3] = new PString(this.length, color, 4, 0.15, 0.2, 0.77);
+    }
+
+    pull(distance) {
+        for (let i=0; i < this.strings.length; i++) {
+            this.strings[i].pull(distance);
+        }
+    }
+
+    draw(x, y) {
+        let interval_distance = this.height / (4-1);
+        for (let i=0; i < this.strings.length; i++) {
+            this.strings[i].draw(x, y+interval_distance*i);
+        }
+    }
+
+    update() {
+        for (let i=0; i < this.strings.length; i++) {
+            this.strings[i].update();
+        }
+    }
+}
+
+///////////////////////////////////////////////////
+// Parameter configurations
+
 const string_len = 400;
 
-// Mass, String constant, Damping
-let thin_string = new PString(string_len, 0.1, 0.2, 0.8);
-let mid_string = new PString(string_len, 0.2, 0.2, 0.85);
-let bass_string = new PString(string_len, 0.3, 0.2, 0.9);
+// length, height, color
+let guitar = new Guitar(400, 100, 'green');
+let bass = new Bass(400, 80, 'purple');
 
 let counter = 0;
+
+///////////////////////////////////////////////////
+// JSON format
+// p1>>pluck(degree=[4,5,6],amp=[2,2,2,2],sample=1)
+let json_pak = { p1:
+                 { type: 'pluck',
+                   attributes: [
+                       {degree: [4, 5, 6]},
+                       {amp: [2, 2, 2, 2]},
+                       {sample: 1}]}};
+
+///////////////////////////////////////////////////
+// p5 set up
 
 function setup () {
     createCanvas(710, 400);
@@ -79,28 +157,25 @@ function setup () {
     left = width / 2 - 100;
     right = width / 2 + 100;
 
-    thin_string.pull(100);
-    bass_string.pull(100);
-    mid_string.pull(100);
+    guitar.pull(100);
+    bass.pull(100);
+
 }
 
 function draw() {
     background(0);
 
-    thin_string.update();
-    thin_string.draw(150, 200);
+    guitar.update();
+    guitar.draw(150, 80);
 
-    mid_string.update();
-    mid_string.draw(150, 250);
+    bass.update();
+    bass.draw(150, 250);
 
-    bass_string.update();
-    bass_string.draw(150, 300);
     counter++;
     if (counter == 100){
         counter = 0;
-        thin_string.pull(100);
-        mid_string.pull(100);
-        bass_string.pull(100);
+        guitar.pull(30);
+        bass.pull(30);
     }
 }
 
