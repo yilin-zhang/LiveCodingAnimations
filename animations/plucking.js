@@ -63,9 +63,9 @@ class PString {
 //////////////////////////////////////////////////
 // Instrument Definitions
 class Guitar {
-    constructor(length, height, color) {
+    constructor(width, height, color) {
         this.strings = new Array(5);
-        this.length = length;
+        this.length = width;
         this.height = height;
         this.strings[0] = new PString(this.length, color, 4.5, 0.4, 0.5, 0.85);
         this.strings[1] = new PString(this.length, color, 4, 0.35, 0.4, 0.83);
@@ -96,9 +96,9 @@ class Guitar {
 }
 
 class Bass {
-    constructor(length, height, color) {
+    constructor(width, height, color) {
         this.strings = new Array(4);
-        this.length = length;
+        this.length = width;
         this.height = height;
         this.strings[0] = new PString(this.length, color, 5.5, 0.4, 0.5, 0.85);
         this.strings[1] = new PString(this.length, color, 5, 0.35, 0.4, 0.83);
