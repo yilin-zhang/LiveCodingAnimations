@@ -15,7 +15,9 @@ $ node osc_send_bridge.js
 ```
 Open `osc_sender.html`.
 
-(You can also use any other OSC sender. The sending port should be 3333.)
+You can also use any other OSC sender. The sending port should be 3333.
+
+This part will be replaced by our FoxDot OSC sender.
 
 ### Set up OSC receiver
 
