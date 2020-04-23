@@ -268,7 +268,7 @@ function setup() {
     let keyboard_white_color = '#cad3de';
     let keyboard_black_color = '#63273b';
     let keyboard_triggered_color = '#58adbf';
-    waveform = new Waveform(800, 200, waveform_color);
+    waveform = new Waveform(windowWidth, 200, waveform_color);
     mic = new p5.AudioIn();
     mic.start();
     waveform.initialize(mic);
@@ -288,7 +288,7 @@ function draw() {
 
     waveform.draw();
     guitar.draw(0, 200);
-    keyboard.draw(230, 360);
+    keyboard.draw(windowWidth/2-350/2, 360);
     bass.draw(0, 550);
 }
 
