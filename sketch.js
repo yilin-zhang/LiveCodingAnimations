@@ -83,6 +83,7 @@ class Guitar {
     }
 
     draw(x, y) {
+        rectMode(CORNER);
         for (let i=0; i < this.strings.length; i++) {
             this.strings[i].update();
         }
@@ -112,6 +113,7 @@ class Bass {
     }
 
     draw(x, y) {
+        rectMode(CORNER);
         for (let i=0; i < this.strings.length; i++) {
             this.strings[i].update();
         }
@@ -127,7 +129,6 @@ class Waveform {
         this.width = width;
         this.height = height;
         this.color = color;
-        console.log(this.color);
 
         this.prevLevels = new Array(60);
     }
@@ -139,6 +140,7 @@ class Waveform {
     }
 
     draw() {
+        rectMode(CENTER);
         let level = this.amplitude.getLevel();
 
         // rectangle variables
@@ -174,15 +176,90 @@ class Waveform {
     }
 }
 
+class Keyboard {
+    constructor(width, height, whitekeycolor, blackkeycolor, triggeredkeycolor) {
+        this.width = width;
+        this.height = height;
+        this.whitekeycolor = whitekeycolor;
+        this.blackkeycolor = blackkeycolor;
+        this.triggeredkeycolor = triggeredkeycolor;
+        this.whiteWidth = this.width / 7;
+        this.blackWidth = this.whiteWidth * 0.7;
+        this.blackHeight = this.height * 0.7;
+        this.status = new Array(12);
+        for (let i=0; i<12; i++) {
+            this.status[i] = false;
+        }
+        this.durCounter = new Array(12);
+        for (let i=0; i<12; i++) {
+            this.durCounter[i] = 0;
+        }
+    }
+
+    trigger(keyNum) {
+        this.status[keyNum] = true;
+        this.durCounter[keyNum] = 20;
+    }
+
+    draw(x, y) {
+        // draw whitekeys
+        rectMode(CORNER);
+        noStroke();
+        let blackKeyNum = [1, 3, 6, 8, 10];
+        let whiteKeyNum = [0, 2, 4, 5, 7, 9, 11];
+        let num;
+        for (let i=0; i<whiteKeyNum.length; i++){
+            num = whiteKeyNum[i];
+            if (this.status[num]){
+                fill(this.triggeredkeycolor);
+                this.durCounter[num]--;
+                if (this.durCounter[num] === 0){
+                    this.status[num] = false;
+                }
+            } else {
+                fill(this.whitekeycolor);
+            }
+            if (num <= 4) {
+                rect(x+num/2*this.whiteWidth, y, this.whiteWidth, this.height);
+            } else {
+                rect(x+(num+1)/2*this.whiteWidth, y, this.whiteWidth, this.height);
+            }
+        }
+        for (let i=0; i<blackKeyNum.length; i++){
+            num = blackKeyNum[i];
+            if (this.status[num]){ // 1, 3, 6, 8, 10
+                fill(this.triggeredkeycolor);
+                this.durCounter[num]--;
+                if (this.durCounter[num] === 0){
+                    this.status[num] = false;
+                }
+            } else {
+                fill(this.blackkeycolor);
+            }
+            if (num <= 3) {
+                rect(x+(num+1)/2*this.whiteWidth-this.blackWidth/2, y, this.blackWidth, this.blackHeight);
+            } else {
+                rect(x+(num+2)/2*this.whiteWidth-this.blackWidth/2, y, this.blackWidth, this.blackHeight);
+            }
+
+        }
+    }
+}
+
+
+//////////////////////////////////////////////////
+// p5 set up
+
 let waveform;
 let guitar;
 let bass;
+let keyboard;
 
 function setup() {
     c = createCanvas(windowWidth, windowHeight);
     background(0);
     noStroke();
-    rectMode(CENTER);
+    rectMode(CORNER);
     // colorMode(HSB);
 
     waveform = new Waveform(800, 200, 'purple');
@@ -192,6 +269,7 @@ function setup() {
 
     bass = new Bass(400, 80, 'blue');
     guitar = new Guitar(400, 100, 'green');
+    keyboard = new Keyboard(200, 100, 'white', 'black', 'red');
 
     guitar.pull(100);
     bass.pull(100);
@@ -202,10 +280,9 @@ function draw() {
     background(20, 20);
 
     waveform.draw();
-
     guitar.draw(150, 150);
-
     bass.draw(150, 350);
+    keyboard.draw(150, 400);
 }
 
 
@@ -231,6 +308,7 @@ socket.on('message', function(obj) {
     var status = document.getElementById("status");
     guitar.pull(30);
     bass.pull(30);
+    keyboard.trigger(2);
     status.innerHTML = obj[0];
     console.log(obj);
 });
