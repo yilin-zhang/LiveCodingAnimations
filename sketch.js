@@ -257,19 +257,25 @@ let keyboard;
 
 function setup() {
     c = createCanvas(windowWidth, windowHeight);
-    background(0);
+    //background(30);
     noStroke();
     rectMode(CORNER);
     // colorMode(HSB);
 
-    waveform = new Waveform(800, 200, 'purple');
+    let waveform_color = '#b25769';
+    let bass_color = '#1f494e';
+    let guitar_color = '#58adbf';
+    let keyboard_white_color = '#cad3de';
+    let keyboard_black_color = '#63273b';
+    let keyboard_triggered_color = '#58adbf';
+    waveform = new Waveform(800, 200, waveform_color);
     mic = new p5.AudioIn();
     mic.start();
     waveform.initialize(mic);
 
-    bass = new Bass(400, 80, 'blue');
-    guitar = new Guitar(400, 100, 'green');
-    keyboard = new Keyboard(200, 100, 'white', 'black', 'red');
+    bass = new Bass(windowWidth, 80, bass_color);
+    guitar = new Guitar(windowWidth, 100, guitar_color);
+    keyboard = new Keyboard(350, 150, keyboard_white_color, keyboard_black_color, keyboard_triggered_color);
 
     guitar.pull(100);
     bass.pull(100);
@@ -277,12 +283,13 @@ function setup() {
 }
 
 function draw() {
-    background(20, 20);
+    // background(20, 20);
+    background(30);
 
     waveform.draw();
-    guitar.draw(150, 150);
-    bass.draw(150, 350);
-    keyboard.draw(150, 400);
+    guitar.draw(0, 200);
+    keyboard.draw(230, 360);
+    bass.draw(0, 550);
 }
 
 
