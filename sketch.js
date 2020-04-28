@@ -357,17 +357,15 @@ let keyboard_dur = 0;
 
 function setup() {
     c = createCanvas(windowWidth, windowHeight);
-    //background(30);
     noStroke();
     rectMode(CORNER);
-    // colorMode(HSB);
 
-    let waveform_color = '#b25769';
-    let bass_color = '#1f494e';
-    let guitar_color = '#58adbf';
-    let keyboard_white_color = '#cad3de';
-    let keyboard_black_color = '#63273b';
-    let keyboard_triggered_color = '#58adbf';
+    let waveform_color = '#cc00cc';
+    let bass_color = '#0000cc';
+    let guitar_color = '#9900cc';
+    let keyboard_white_color = '#6600cc';
+    let keyboard_black_color = '#3300cc';
+    let keyboard_triggered_color = '#cc00cc';
     waveform = new Waveform(windowWidth, 200, waveform_color);
     mic = new p5.AudioIn();
     mic.start();
@@ -375,7 +373,7 @@ function setup() {
 
     bass = new Bass(windowWidth, 80, bass_color);
     guitar = new Guitar(windowWidth, 100, guitar_color);
-    keyboard = new Keyboard(350, 150, keyboard_white_color, keyboard_black_color, keyboard_triggered_color);
+    keyboard = new Keyboard(windowWidth, 500, keyboard_white_color, keyboard_black_color, keyboard_triggered_color);
 
     guitar.pull(100);
     bass.pull(100);
@@ -383,12 +381,11 @@ function setup() {
 }
 
 function draw() {
-    // background(20, 20);
     background(30);
 
+    keyboard.draw(0, 170);
     waveform.draw();
     guitar.draw(0, 200);
-    keyboard.draw(windowWidth/2-350/2, 360);
     bass.draw(0, 550);
 }
 
@@ -417,7 +414,7 @@ socket.on('message', function(obj) {
     let status = document.getElementById("status");
     status.innerHTML = obj[0];
 
-    let info = JSON.parse(obj[1])
+    let info = JSON.parse(obj[1]);
     console.log(info);
     let attributes = info.attributes;
     let player = info.type;
